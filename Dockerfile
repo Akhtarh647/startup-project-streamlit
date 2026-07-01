@@ -19,9 +19,10 @@ WORKDIR /app
 # Copy virtual environment from builder stage
 COPY --from=builder /opt/venv /opt/venv
 
-# Copy your Streamlit app and startup dataset explicitly
+# Copy your Streamlit app, dataset, and image asset explicitly
 COPY app.py .
 COPY startup_clean.csv .
+COPY OIP.jpeg .
 
 ENV PATH="/opt/venv/bin:$PATH"
 ENV PYTHONUNBUFFERED=1

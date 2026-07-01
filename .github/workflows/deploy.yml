@@ -39,4 +39,5 @@ jobs:
     - name: Deploy Manifests to GKE
       run: |
         kubectl apply -f k8s-manifest.yaml
-        kubectl rollout status deployment/streamlit-startup-deployment
+        kubectl rollout restart deployment/streamlit-startup-deployment
+        kubectl rollout status deployment/streamlit-startup-deployment --timeout=180s
