@@ -16,16 +16,23 @@ RUN pip install --no-cache-dir -r requirements.txt
 FROM python:3.11-slim
 WORKDIR /app
 
+# Copy virtual environment from builder stage
 COPY --from=builder /opt/venv /opt/venv
-# Copying your Streamlit app and startup dataset explicitly
+
+# Copy your Streamlit app and startup dataset explicitly
 COPY app.py .
 COPY startup_clean.csv .
 
 ENV PATH="/opt/venv/bin:$PATH"
 ENV PYTHONUNBUFFERED=1
+# Streamlit ko temporary cache files create karne ke liye permission chahiye hoti hai
+ENV STREAMLIT_HOME=/app 
 
-# Security Best Practice: Run as non-root user
-RUN useradd -u 8888 appuser && chown -R appuser:appuser /app
+# Fix Permissions: /app aur /opt/venv dono ka owner appuser ko banayein
+RUN useradd -u 8888 appuser && \
+    chown -R appuser:appuser /app && \
+    chown -R appuser:appuser /opt/venv
+
 USER appuser
 
 EXPOSE 8501
