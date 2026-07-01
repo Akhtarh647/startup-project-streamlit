@@ -12,27 +12,26 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4 # Upgraded to v4 for Node 24 support
 
     - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v1
+      uses: google-github-actions/auth@v2 # Upgraded to v2 to fix authentication and Node engine
       with:
-        credentials_json: ${{ secrets.GCP_SA_KEY }}
+        credentials_json: ${{ secrets.GCP_SA_KEY }} # Make sure this is added in GitHub Secrets
 
     - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
+      uses: google-github-actions/setup-gcloud@v2 # Upgraded to v2
 
     - name: Configure Docker for GAR
       run: gcloud auth configure-docker europe-west2-docker.pkg.dev
 
     - name: Build and Push Docker Image
       run: |
-        # Yahan project id hardcode karne ki jagah variable use karna hi safest hai
         docker build -t europe-west2-docker.pkg.dev/plated-client-499118-m4/movie-analytics-repo/startup-app:latest .
         docker push europe-west2-docker.pkg.dev/plated-client-499118-m4/movie-analytics-repo/startup-app:latest
 
     - name: Set up GKE Credentials
-      uses: google-github-actions/get-gke-credentials@v1
+      uses: google-github-actions/get-gke-credentials@v2 # Upgraded to v2
       with:
         cluster_name: startup-analysis-cluster
         location: europe-west2-a
