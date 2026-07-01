@@ -17,7 +17,7 @@ spec:
       containers:
       - name: streamlit-container
         image: europe-west2-docker.pkg.dev/plated-client-499118-m4/movie-analytics-repo/startup-app:latest
-        imagePullPolicy: Always # Forces GKE to bypass cache and pull the fresh permission-fixed image
+        imagePullPolicy: Always
         ports:
         - containerPort: 8501
         resources:

@@ -25,10 +25,9 @@ COPY startup_clean.csv .
 
 ENV PATH="/opt/venv/bin:$PATH"
 ENV PYTHONUNBUFFERED=1
-# Streamlit ko temporary cache files create karne ke liye permission chahiye hoti hai
 ENV STREAMLIT_HOME=/app 
 
-# Fix Permissions: /app aur /opt/venv dono ka owner appuser ko banayein
+# Fix Permissions for appuser
 RUN useradd -u 8888 appuser && \
     chown -R appuser:appuser /app && \
     chown -R appuser:appuser /opt/venv
@@ -37,5 +36,5 @@ USER appuser
 
 EXPOSE 8501
 
-# Streamlit-specific production flags
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Using absolute path to avoid "executable file not found" error
+CMD ["/opt/venv/bin/streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
