@@ -1,0 +1,43 @@
+name: Deploy Streamlit App to GKE
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+
+    - name: Configure Docker for GAR
+      run: gcloud auth configure-docker europe-west2-docker.pkg.dev
+
+    - name: Build and Push Docker Image
+      run: |
+        # Yahan project id hardcode karne ki jagah variable use karna hi safest hai
+        docker build -t europe-west2-docker.pkg.dev/plated-client-499118-m4/movie-analytics-repo/startup-app:latest .
+        docker push europe-west2-docker.pkg.dev/plated-client-499118-m4/movie-analytics-repo/startup-app:latest
+
+    - name: Set up GKE Credentials
+      uses: google-github-actions/get-gke-credentials@v1
+      with:
+        cluster_name: startup-analysis-cluster
+        location: europe-west2-a
+
+    - name: Deploy Manifests to GKE
+      run: |
+        kubectl apply -f k8s-manifest.yaml
+        kubectl rollout status deployment/streamlit-startup-deployment

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamlit-startup-deployment
+  labels:
+    app: streamlit-startup
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: streamlit-startup
+  template:
+    metadata:
+      labels:
+        app: streamlit-startup
+    spec:
+      containers:
+      - name: streamlit-container
+        # Yahan aapka naya sahi project id update ho gaya hai
+        image: europe-west2-docker.pkg.dev/plated-client-499118-m4/movie-analytics-repo/startup-app:latest
+        ports:
+        - containerPort: 8501
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamlit-startup-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: streamlit-startup
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8501
