@@ -17,15 +17,16 @@ spec:
       containers:
       - name: streamlit-container
         image: europe-west2-docker.pkg.dev/plated-client-499118-m4/movie-analytics-repo/startup-app:latest
+        imagePullPolicy: Always # Forces GKE to bypass cache and pull the fresh permission-fixed image
         ports:
         - containerPort: 8501
         resources:
           requests:
-            memory: "256Mi"   # Pehle 512Mi tha, optimized for small/free nodes
-            cpu: "100m"       # Pehle 250m tha
+            memory: "256Mi"
+            cpu: "100m"
           limits:
-            memory: "512Mi"   # Pehle 1Gi tha
-            cpu: "250m"       # Pehle 500m ram/cpu tha
+            memory: "512Mi"
+            cpu: "250m"
 ---
 apiVersion: v1
 kind: Service
