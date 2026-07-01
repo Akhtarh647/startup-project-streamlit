@@ -16,17 +16,16 @@ spec:
     spec:
       containers:
       - name: streamlit-container
-        # Yahan aapka naya sahi project id update ho gaya hai
         image: europe-west2-docker.pkg.dev/plated-client-499118-m4/movie-analytics-repo/startup-app:latest
         ports:
         - containerPort: 8501
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "250m"
+            memory: "256Mi"   # Pehle 512Mi tha, optimized for small/free nodes
+            cpu: "100m"       # Pehle 250m tha
           limits:
-            memory: "1Gi"
-            cpu: "500m"
+            memory: "512Mi"   # Pehle 1Gi tha
+            cpu: "250m"       # Pehle 500m ram/cpu tha
 ---
 apiVersion: v1
 kind: Service
